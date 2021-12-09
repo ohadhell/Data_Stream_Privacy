@@ -4,7 +4,7 @@ import copy
 # reading nursery.data csv file from github url
 #url = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/nursery.data'
 url2 = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/etsy.csv'
-dataBase =  pd.read_csv('etsy.csv', sep=",",header=0)
+dataBase =  pd.read_csv('marketing_campaign.csv', sep="\t",header=0)
 data_size = len(dataBase.index) #number of transactions in data file
 window_size = 5     #each sliding window size - chosen by us 
 window_step = 2     #each step between two windows - chosen by us
