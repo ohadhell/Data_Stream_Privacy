@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-import copy
+from efficient_apriori import apriori
+
 # reading nursery.data csv file from github url
 #url = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/nursery.data'
 url2 = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/etsy.csv'
@@ -36,8 +37,16 @@ def slide_window(current_window):
     left_trans.remove(int(n))
   return current_window
 
-print(dataBase.iloc[window1]) 
-slide_window(window1)
-print(dataBase.iloc[window1]) 
-slide_window(window1)
-print(dataBase.iloc[window1]) 
+
+
+
+#transactions = [('eggs', 'bacon', 'soup'),('eggs', 'bacon', 'apple'),('soup', 'bacon', 'banana')]
+#itemsets, rules = apriori(transactions, min_support=0.5, min_confidence=1)
+#print(rules)
+
+
+#print(dataBase.iloc[window1]) 
+#slide_window(window1)
+#print(dataBase.iloc[window1]) 
+#slide_window(window1)
+#print(dataBase.iloc[window1]) 
