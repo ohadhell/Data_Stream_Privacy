@@ -2,19 +2,23 @@ import numpy as np
 import pandas as pd
 from efficient_apriori import apriori
 
-# reading nursery.data csv file from github url
-#url = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/nursery.data'
-url2 = 'https://raw.githubusercontent.com/ohadhell/Data_Stream_Privacy/main/etsy.csv'
-dataBase =  pd.read_csv('marketing_campaign.csv', sep="\t",header=0)
+col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Response","Complain","AcceptedCmp3","AcceptedCmp4","AcceptedCmp5","AcceptedCmp1",
+"AcceptedCmp2"]
+col_list = ["Year_Birth","Education","Marital_Status","Income","Kidhome","Teenhome",
+"Recency","MntWines",	"MntFruits",	"MntMeatProducts",	"MntFishProducts",
+"MntSweetProducts",	"MntGoldProds",	"NumDealsPurchases",	"NumWebPurchases",	"NumCatalogPurchases",
+"NumStorePurchases"	,"NumWebVisitsMonth"]
+
+dataBase =  pd.read_csv('marketing_campaign.csv', sep="\t",header=0,usecols=col_list)
 data_size = len(dataBase.index) #number of transactions in data file
-window_size = 5     #each sliding window size - chosen by us 
-window_step = 2     #each step between two windows - chosen by us
+window_size = 500     #each sliding window size - chosen by us 
+window_step = 200     #each step between two windows - chosen by us
 window=[]           #the main window
 left_trans = list(range(data_size)) #keeping track of the remaining transactions
 
-# print(data.iloc[1]['Parents']) #way to print specific row specific column
-# print(data.iloc[[1,2,3]]) 
-#np.random.choice(range(20), 10, replace=False) 
+
+for col in col_list: #adding the column name to each item
+     dataBase[col] = dataBase[col].replace(dataBase[col].unique(),list(map((lambda a: str(col)+": "+str(a)),dataBase[col].unique()))) 
 
 #initializing the first sliding window
 def sliding_window_init():
@@ -24,6 +28,7 @@ def sliding_window_init():
     left_trans.remove(int(n))
   return window
 window1= sliding_window_init()
+
 
 
 #sliding the current window to the next one according to window_step
@@ -39,10 +44,17 @@ def slide_window(current_window):
 
 
 
-
+transactions = [tuple(row) for row in dataBase.iloc[window1].values.tolist()]
+itemsets, rules = apriori(transactions, min_support=0.3, min_confidence=0,output_transaction_ids=True)
+print(rules)
+print("NEW WINDOW")
+slide_window(window1)
+transactions = [tuple(row) for row in dataBase.iloc[window1].values.tolist()]
+itemsets, rules = apriori(transactions, min_support=0.3, min_confidence=0,output_transaction_ids=True)
+print(rules)
 #transactions = [('eggs', 'bacon', 'soup'),('eggs', 'bacon', 'apple'),('soup', 'bacon', 'banana')]
-#itemsets, rules = apriori(transactions, min_support=0.5, min_confidence=1)
-#print(rules)
+
+
 
 
 #print(dataBase.iloc[window1]) 
