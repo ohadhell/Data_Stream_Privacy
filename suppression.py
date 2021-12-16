@@ -1,11 +1,14 @@
 from window import Window
+from node import Node2
+
 
 def intersection(lst1, lst2): #intersecting two arrays
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
 
-def items_transactions_cover(window: Window): #returning dictioanry of {"item" : [transactions it appears in]}
-    transactions_cover= {}
+def createTree(window: Window): #returning root array of initial items in the current window
+    #create first layer
+    firstLayer= []
     for item in Window.items_in_window(window):
         i = 0
         arr=[]
@@ -13,22 +16,23 @@ def items_transactions_cover(window: Window): #returning dictioanry of {"item" :
             if (trans.__contains__(item)):
                 arr.append(i)
             i+=1
-        transactions_cover[item] = arr
-    return transactions_cover
+        firstLayer.append(Node2(item,arr)) #adding a new node to the root 
+        #finished first layer
+    for node in firstLayer:
+        create_next_layers([node],firstLayer)
+        
+    return Node2("ROOT",firstLayer)
 
-def inter_string(item1,item2): #returning the concatination of two strings ordered alphabetically
-    if (item1 > item2):
-        return (str(item2)+str(item1))
-    return (str(item1)+str(item2))
+def create_next_layers(parent, parent_bros):
+    parent=parent[0] #passing by reference
+    children=[]
+    for i in range(len(parent_bros)):
+        if (not parent is parent_bros[i]):
+            intersec = intersection(Node2.__getIndexs__(parent),Node2.__getIndexs__(parent_bros[i]))
+            if(len(intersec) > 0):
+                child = Node2(Node2.__getValue__(parent_bros[i]),intersec)
+                Node2.addChild([parent],[child])
+                children.append(child)
+    for node in children:
+        create_next_layers([node],children)
 
-#creating the next cover intersection, key is combiantion of the the two previous 
-#keys ordered alphabetically, val is intersection of arrays of the apeared-in transactions
-def next_cover_intersection(transCover):
-    new_trans_cover={}
-    for item1 in transCover:
-        for item2 in transCover:
-            if (not item1==item2):
-                newArr = intersection(transCover[item1],transCover[item2])
-                if (len(newArr) > 0):
-                    new_trans_cover[inter_string(item1,item2)]=newArr
-    return new_trans_cover
