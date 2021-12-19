@@ -8,10 +8,11 @@ import pandas as pd
 dataSet='marketing_campaign.csv'
 window_size = 2
 window_step = 1
-col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Response","Complain","AcceptedCmp3","AcceptedCmp4","AcceptedCmp5","AcceptedCmp1",
-"Year_Birth","AcceptedCmp2"]
-col_list = ["Education","Marital_Status","Kidhome","Teenhome"]
-#,"Income","Recency","MntWines",	"MntFruits",	"MntMeatProducts",	"MntFishProducts",
+col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Response","Complain","AcceptedCmp3"
+,"AcceptedCmp4","AcceptedCmp5","AcceptedCmp1","AcceptedCmp2"]
+
+col_list = ["Kidhome","Income","Recency","Year_Birth"]
+#,"MntWines","Education","Marital_Status","Teenhome",	"MntFruits","MntMeatProducts",	"MntFishProducts",
 #"MntSweetProducts",	"MntGoldProds",	"NumDealsPurchases",	"NumWebPurchases",	"NumCatalogPurchases",
 #"NumStorePurchases"	,"NumWebVisitsMonth"]
 ##########constants########### 
@@ -22,8 +23,8 @@ print("ILOC:")
 print(theWindow.curr_window)
 print("TREE:")
 root = sp.createTree(theWindow)
-
 print(Node.printSubTree([root]))
+
 
 
 still_sliding = True #boolean to indicate the sliding is finished -> meaning we slid all the dataSet

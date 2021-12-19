@@ -19,6 +19,5 @@ class Node:
             res+="|"
             res+=str(Node.__printHelp([child],layer+1))
         return res
-
-        
-    
+    #def getLayer(root,layer):
+        #if(layer == 0)
