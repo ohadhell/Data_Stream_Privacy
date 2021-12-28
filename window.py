@@ -47,3 +47,4 @@ class Window:
         (column,value) = item.split(": ")
         self.dataBase[column] = self.dataBase[column].replace([item], [np.NaN])
         self.curr_window = self.dataBase.iloc[self.curr_window_index]
+        self.dataBase[column] = self.dataBase[column].replace([np.NaN], [item])

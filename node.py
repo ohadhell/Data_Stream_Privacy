@@ -9,6 +9,11 @@ class Node:
         parent[0].children.remove(node[0])
     def setChildren(parent,childrenArr):
         parent[0].children = childrenArr
+    def __getChildren__(node):
+        arr=[]
+        for child in node[0].children:
+            arr.append([child])
+        return arr
     def __getIndexs__(self):
         return self.indexs
     def __getValue__(self):

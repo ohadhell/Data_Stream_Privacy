@@ -1,9 +1,10 @@
 from typing import runtime_checkable
 from window import Window
 from node import Node
+import copy
 iSensitive=["Income","Recency","Year_Birth"]
 supportDict={}
-p=0.5
+p=0.7
 
 def intersection(lst1, lst2): #intersecting two arrays
     lst3 = [value for value in lst1 if value in lst2]
@@ -53,41 +54,48 @@ def conf(rule):
     supXA = len(Node.__getIndexs__(rule[0])) #the indexs size of the most inner node of sri
     supX = supportDict[Node.__getValue__(rule[0])]
     for s in range(1,len(rule) - 1):
-        supX=intersection(supX, supportDict[Node.__getValue__(rule[s])])
+        supX = intersection(supX, supportDict[Node.__getValue__(rule[s])])
     return supXA/len(supX)
 
 def C_item_sri(item, sri):
     counter = 0
     for rule in sri:
-        if (rule.__contains__(item)):
+        if (hasValue(rule,item)):
             counter+=1
     return counter
 
 def payOff(item, sri):
-    return C_item_sri(item, sri) / sup(item)
+    sri=sri[0]
+    return (C_item_sri(item, sri)) / sup(item)
 
 def violatesP(rule):
     return conf(rule) >= p
 
-def supressInTree(root, layer, item):
-    #root=root[0] #pointer
+def supressInTree(node, layer, item):
     childrenArr=[]
     if(layer>=0):
-        for child in Node.__getChildrenArr__(root[0]):
+        for child in Node.__getChildren__(node):
             if (Node.__getValue__(child[0]) != item):
-                childrenArr.append(supressInTree(child, layer-1, item))
-    #if (layer > 0):
-        #for child in Node.__getChildrenArr__(root):
-            #supressInTree(child, layer-1, item)
-    #print(Node.printSubTree(root))
-    Node.setChildren(root, childrenArr)
-    return root[0]
+                supressInTree(child, layer-1, item)
+                childrenArr.append(child)
+    else:
+        childrenArr = Node.__getChildren__(node)
+    childrenSet=set()
+    for child in childrenArr:
+        childrenSet.add(child[0])
+    Node.setChildren(node, childrenSet)
 
 def hasValue(lst, mem):
     for node in lst:
         if(Node.__getValue__(node)==mem):
             return True
     return False
+def copySri(sri):
+    sri=sri[0]
+    copy=[]
+    for rule in sri:
+        copy.append(rule)
+    return copy
 
 def suppress(root,window):
     root=root[0] #pointer
@@ -102,32 +110,59 @@ def suppress(root,window):
         while (len(sri) > 0):
             maxPayoff = 0
             supItem = sri[0][0]
+            #finding the item in all the rules with max payoff
             for rule in sri:
-                for item in rule:
-                    currPayoff = payOff(Node.__getValue__(item), sri)
-                    if currPayoff>maxPayoff:
+                for item in rule:       
+                    currPayoff = payOff(Node.__getValue__(item), [sri])
+                    if currPayoff > maxPayoff:
                         maxPayoff = currPayoff
                         supItem = item
-            #suppress b
-            #delete all rules in sri containing b
-            loss = loss+sup(Node.__getValue__(supItem))
-            Window.suppressItem(window,Node.__getValue__(supItem))
-            root = supressInTree([root], i, Node.__getValue__(supItem))
+            toRemoveArr = []
             for rule in sri:
                 if (hasValue(rule, Node.__getValue__(supItem))):
-                    list.remove(sri, rule)
-                    print("removing")
-            #sri = Node.getSRi([root], i)
-            #print(str(i)+" "+ Node.__getValue__(supItem))
-            #print(Node.printSubTree([root]))
-            #sri = filter(violatesP, sriT) #return all rules that violates p-uncertinty
-            #sri = list(sri)
-            #for sri1 in sri:
-                #print(list(map(Node.__getValue__,sri1)))
+                    toRemoveArr.append([rule])
+            for rule in toRemoveArr:
+                sri.remove(rule[0])
+            Window.suppressItem(window,Node.__getValue__(supItem))
+            supressInTree([root], i, Node.__getValue__(supItem))
+            loss = loss+sup(Node.__getValue__(supItem))
+            print("In i= ",i," SupItem is: ",Node.__getValue__(supItem)," With PAYOFF= ",maxPayoff)
+        i+=1
+    return loss
 
-#בעיות: חישוב פייאוף כנראה לא נכון(כל עוד לא איפסתי בפנים נשאר אותו איבר)
-#לא עוצר בלי ההדפסה
-#יוצא עץ לא הגיוני לדעתי
+def suppressMin(root,window):
+    root=root[0] #pointer
+    i = 1
+    loss = 0
+    while(True):
+        sriT = Node.getSRi([root], i) #all rules of size i+1
+        if (len(sriT) == 0):
+                break
+        sri = filter(violatesP, sriT) #return all rules that violates p-uncertinty
+        sri = list(sri)
+        while (len(sri) > 0):
+            supItem = sri[0][0]
+            minPayoff = payOff(Node.__getValue__(supItem), [sri])
+            #finding the item in all the rules with max payoff
+            for rule in sri:
+                for item in rule:       
+                    currPayoff = payOff(Node.__getValue__(item), [sri])
+                    if currPayoff < minPayoff:
+                        minPayoff = currPayoff
+                        supItem = item
+            toRemoveArr = []
+            for rule in sri:
+                if (hasValue(rule, Node.__getValue__(supItem))):
+                    toRemoveArr.append([rule])
+            for rule in toRemoveArr:
+                sri.remove(rule[0])
+            Window.suppressItem(window,Node.__getValue__(supItem))
+            supressInTree([root], i, Node.__getValue__(supItem))
+            loss = loss+sup(Node.__getValue__(supItem))
+            print("In i= ",i," SupItem is: ",Node.__getValue__(supItem)," With PAYOFF= ",maxPayoff)
+        i+=1
+    return loss
+            
                 
 
 
