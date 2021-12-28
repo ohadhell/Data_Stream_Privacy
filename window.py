@@ -43,3 +43,7 @@ class Window:
             for item in self.curr_window[col].unique():
                 items.append(item)
         return items
+    def suppressItem(self, item):
+        (column,value) = item.split(": ")
+        self.dataBase[column] = self.dataBase[column].replace([item], [np.NaN])
+        self.curr_window = self.dataBase.iloc[self.curr_window_index]
