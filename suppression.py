@@ -4,7 +4,7 @@ from node import Node
 import copy
 iSensitive=["Income","Recency","Year_Birth"]
 supportDict={}
-p=0.8
+p=0.5
 
 def intersection(lst1, lst2): #intersecting two arrays
     lst3 = [value for value in lst1 if value in lst2]
@@ -101,6 +101,7 @@ def copySri(sri):
 
 
 def suppress(root,window):
+    window = window[0]
     root=root[0] #pointer
     i = 1
     loss = 0
@@ -133,6 +134,7 @@ def suppress(root,window):
     return loss
 
 def suppressMin(root,window):
+    window = window[0]
     root=root[0] #pointer
     i = 1
     loss = 0
