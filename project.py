@@ -7,45 +7,49 @@ import pandas as pd
 
 ##########constants########### 
 dataSet='marketing_campaign.csv'
-window_size = 3
-window_step = 1
+window_size = 50
+window_step = 25
 col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Response","Complain","AcceptedCmp3"
 ,"AcceptedCmp4","AcceptedCmp5","AcceptedCmp1","AcceptedCmp2"]
 
-col_list = ["Kidhome","Income","Year_Birth","Teenhome"]
-#,"Recency","MntWines","Education","Marital_Status",	"MntFruits","MntMeatProducts",	"MntFishProducts",
-#"MntSweetProducts",	"MntGoldProds",	"NumDealsPurchases",	"NumWebPurchases",	"NumCatalogPurchases",
+col_list = ["Kidhome","Income","Year_Birth","Teenhome"
+,"Recency","MntWines","Education","Marital_Status"]#,	"MntFruits","MntMeatProducts",	"MntFishProducts"]
+#,"MntSweetProducts",	"MntGoldProds",	"NumDealsPurchases",	"NumWebPurchases",	"NumCatalogPurchases",
 #"NumStorePurchases"	,"NumWebVisitsMonth"]
 ##########constants########### 
 
 #creating a window
 theWindow = Window(dataSet,window_size,window_step,col_list)
-print("ILOC:")
-print(theWindow.curr_window)
-print("TREE:")
-root = sp.createTree(theWindow)
-print(Node.getSRi2([root],1))
-print(Node.printSubTree([root]))
-sp.suppress([root],theWindow)
-print("SUPPRESSED: ")
-print(Node.printSubTree([root]))
-
-
-
-
+theSecondWindow = Window(dataSet,window_size,window_step,col_list)
 still_sliding = True #boolean to indicate the sliding is finished -> meaning we slid all the dataSet
+while(still_sliding):
+      print("BEFORE: ")
+      transactions = Window.getTransactions(theWindow)
+      itemsets, rules = apriori(transactions, min_support=0.2, min_confidence=0.2,output_transaction_ids=True)
+      print(rules)
+      root = sp.createTree(theWindow)
+      root2 = sp.createTree(theSecondWindow)
+      loss1 = sp.suppress([root],theWindow)
+      loss2 = sp.suppressMin([root2],theSecondWindow)
+      print("loss 1: ",loss1,"  loss 2 : ",loss2)
+      print("AFTER SUPPRESSION: ")
+      transactions = Window.getTransactions(theWindow)
+      itemsets, rules = apriori(transactions, min_support=0.3, min_confidence=0.2,output_transaction_ids=True)
+      print(rules)
+      still_sliding = Window.slide_window(theWindow)
+      Window.slide_window(theSecondWindow)
 
 
-#while(still_sliding):
-      #items_list= Window.items_in_window(theWindow) #saving all possible values
-      #algorithm....
-      #still_sliding = Window.slide_window(theWindow)
 
 
 
 
-#transactions = Window.getTransactions(theWindow)
-#itemsets, rules = apriori(transactions, min_support=0.3, min_confidence=0.2,output_transaction_ids=True)
+
+
+
+
+
+
 
 
 

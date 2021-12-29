@@ -31,7 +31,7 @@ class Window:
             self.curr_window_index.append(int(n))
             self.left_trans.remove(int(n))
         self.curr_window = self.dataBase.iloc[self.curr_window_index]
-        return True
+        return (True,Wdel,Wadd)
 
 #return the transactions of the current window
     def getTransactions(self):

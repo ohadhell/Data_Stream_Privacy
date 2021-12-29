@@ -4,7 +4,7 @@ from node import Node
 import copy
 iSensitive=["Income","Recency","Year_Birth"]
 supportDict={}
-p=0.7
+p=0.8
 
 def intersection(lst1, lst2): #intersecting two arrays
     lst3 = [value for value in lst1 if value in lst2]
@@ -55,6 +55,8 @@ def conf(rule):
     supX = supportDict[Node.__getValue__(rule[0])]
     for s in range(1,len(rule) - 1):
         supX = intersection(supX, supportDict[Node.__getValue__(rule[s])])
+    if(len(supX) == 0):
+        return 0
     return supXA/len(supX)
 
 def C_item_sri(item, sri):
@@ -97,6 +99,7 @@ def copySri(sri):
         copy.append(rule)
     return copy
 
+
 def suppress(root,window):
     root=root[0] #pointer
     i = 1
@@ -126,7 +129,6 @@ def suppress(root,window):
             Window.suppressItem(window,Node.__getValue__(supItem))
             supressInTree([root], i, Node.__getValue__(supItem))
             loss = loss+sup(Node.__getValue__(supItem))
-            print("In i= ",i," SupItem is: ",Node.__getValue__(supItem)," With PAYOFF= ",maxPayoff)
         i+=1
     return loss
 
@@ -159,7 +161,6 @@ def suppressMin(root,window):
             Window.suppressItem(window,Node.__getValue__(supItem))
             supressInTree([root], i, Node.__getValue__(supItem))
             loss = loss+sup(Node.__getValue__(supItem))
-            print("In i= ",i," SupItem is: ",Node.__getValue__(supItem)," With PAYOFF= ",maxPayoff)
         i+=1
     return loss
             
