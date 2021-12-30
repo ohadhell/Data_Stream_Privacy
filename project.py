@@ -5,10 +5,11 @@ import suppression as sp
 from node import Node
 import pandas as pd
 
+
 ##########constants########### 
 dataSet='marketing_campaign.csv'
-window_size = 500
-window_step = 200
+window_size = 40
+window_step = 10
 col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Complain"
 ,"AcceptedCmp4","AcceptedCmp5","AcceptedCmp1","AcceptedCmp2","AcceptedCmp3","Recency","MntWines"]
 
@@ -25,19 +26,23 @@ still_sliding = True #boolean to indicate the sliding is finished -> meaning we 
 while(still_sliding):
       print("BEFORE: ")
       transactions = Window.getTransactions(theWindow)
-      itemsets, rules = apriori(transactions, min_support=0.2, min_confidence=0.2,output_transaction_ids=True)
+      itemsets, rules = apriori(transactions, min_support=0.1, min_confidence=0.5,output_transaction_ids=True)
+      print("NUM RULES: ",len(rules))
       print(rules)
-      root = sp.createTree(theWindow)
-      root2 = sp.createTree(theSecondWindow)
+      root = sp.createTree([theWindow])
+      root2 = sp.createTree([theSecondWindow])
       loss1 = sp.suppress([root],[theWindow])
       loss2 = sp.suppressMin([root2],[theSecondWindow])
       print("loss 1: ",loss1,"  loss 2 : ",loss2)
       print("AFTER SUPPRESSION: ")
       transactions = Window.getTransactions(theWindow)
-      itemsets, rules = apriori(transactions, min_support=0.2, min_confidence=0.2,output_transaction_ids=True)
-      print(rules)
+      itemsets, rules = apriori(transactions, min_support=0.1, min_confidence=0.5,output_transaction_ids=True)
+      rules_fil = list(sp.filterSuppres(rules)) #filtering all the suppressed items in the assoc rules
+      print("NUM RULES: ",len(rules_fil))
+      print(rules_fil)
       still_sliding = Window.slide_window(theWindow)
       Window.slide_window(theSecondWindow)
+
 
 
 

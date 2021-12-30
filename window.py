@@ -17,7 +17,7 @@ class Window:
         for col in col_list: #adding the column name to each item
             self.dataBase[col] = self.dataBase[col].replace(self.dataBase[col].unique(),list(map((lambda a: str(col)+": "+str(a)),self.dataBase[col].unique()))) 
         self.curr_window = self.dataBase.iloc[self.curr_window_index] #the actual window transactions
-        
+    
 
     #sliding the current window to the next one according to window_step
     def slide_window(self):
@@ -45,6 +45,11 @@ class Window:
         return items
     def suppressItem(self, item):
         (column,value) = item.split(": ")
-        self.dataBase[column] = self.dataBase[column].replace([item], ["classified"])
-        self.curr_window = self.dataBase.iloc[self.curr_window_index]
+        print("SUPPRESSING: ",item)
+        #self.dataBase[column] = self.dataBase[column].replace([item], ["classified"])
+        #self.curr_window = self.dataBase.iloc[self.curr_window_index]
         #self.dataBase[column] = self.dataBase[column].replace([np.NaN], [item])
+        #######################################################################
+        for ro in self[0].curr_window_index:
+            if (self[0].dataBase.loc[ro].at[column] == item):
+                    self[0].curr_window.at[ro,column] = "SUPPRESSED"

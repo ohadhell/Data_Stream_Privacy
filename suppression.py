@@ -12,6 +12,7 @@ def intersection(lst1, lst2): #intersecting two arrays
 
 def createTree(window: Window): #returning root array of initial items in the current window
     #create first layer
+    window=window[0]
     firstLayer= []
     sensitives=[]
     for item in Window.items_in_window(window): 
@@ -127,7 +128,7 @@ def suppress(root,window):
                     toRemoveArr.append([rule])
             for rule in toRemoveArr:
                 sri.remove(rule[0])
-            Window.suppressItem(window,Node.__getValue__(supItem))
+            Window.suppressItem([window],Node.__getValue__(supItem))
             supressInTree([root], i, Node.__getValue__(supItem))
             loss = loss+sup(Node.__getValue__(supItem))
         i+=1
@@ -160,11 +161,19 @@ def suppressMin(root,window):
                     toRemoveArr.append([rule])
             for rule in toRemoveArr:
                 sri.remove(rule[0])
-            Window.suppressItem(window,Node.__getValue__(supItem))
+            Window.suppressItem([window],Node.__getValue__(supItem))
             supressInTree([root], i, Node.__getValue__(supItem))
             loss = loss+sup(Node.__getValue__(supItem))
         i+=1
     return loss
+
+def filterSuppres(rules):
+      return filter(lambda rule: hasSupp(rule.lhs) and hasSupp(rule.rhs), rules)
+def hasSupp(lst):
+    for item in lst:
+        if(item == "SUPPRESSED"):
+            return False
+    return True
             
                 
 
