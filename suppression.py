@@ -2,7 +2,7 @@ from typing import runtime_checkable
 from window import Window
 from node import Node
 import copy
-iSensitive=["Income","Recency","Year_Birth"]
+iSensitive=["Income","Marital_Status","Education"]
 supportDict={}
 p=0.5
 

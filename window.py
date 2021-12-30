@@ -45,7 +45,6 @@ class Window:
         return items
     def suppressItem(self, item):
         (column,value) = item.split(": ")
-        print("SUPPRESSING: ",item)
         #self.dataBase[column] = self.dataBase[column].replace([item], ["classified"])
         #self.curr_window = self.dataBase.iloc[self.curr_window_index]
         #self.dataBase[column] = self.dataBase[column].replace([np.NaN], [item])
