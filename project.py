@@ -8,8 +8,8 @@ import pandas as pd
 
 ##########constants########### 
 dataSet='marketing_campaign.csv'
-window_size = 200
-window_step = 80
+window_size = 75
+window_step = 30
 col_Not_Used=["ID","Dt_Customer","Z_CostContact","Z_Revenue","Complain"
 ,"AcceptedCmp4","AcceptedCmp5","AcceptedCmp1","AcceptedCmp2","AcceptedCmp3","Recency","MntWines"]
 
